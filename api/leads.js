@@ -79,6 +79,28 @@ function parseLeadRowsFromHtml(html) {
   const rows = html.match(/<tr[\s\S]*?<\/tr>/gi) || [];
   const items = [];
 
+  const findPhone = (row, cellText) => {
+    const joined = cellText.join(" ");
+    let m = joined.match(/\+?\d[\d\s()\-]{7,}\d/);
+    if (m) return m[0].trim();
+
+    const tel = row.match(/href=["']tel:([^"']+)["']/i);
+    if (tel) {
+      m = tel[1].match(/\+?\d[\d\s()\-]{7,}\d/);
+      if (m) return m[0].trim();
+    }
+
+    const attr = row.match(/(?:data-phone|data-value|value)=["']([^"']*\+?\d[^"']*)["']/i);
+    if (attr) {
+      m = attr[1].match(/\+?\d[\d\s()\-]{7,}\d/);
+      if (m) return m[0].trim();
+    }
+
+    const compact = row.replace(/\D/g, "");
+    const chunk = compact.match(/(7\d{10}|8\d{10}|\d{10})/);
+    return chunk ? chunk[1] : null;
+  };
+
   for (const row of rows) {
     const cells = row.match(/<td[\s\S]*?<\/td>/gi) || [];
     if (cells.length < 3) continue;
@@ -86,10 +108,10 @@ function parseLeadRowsFromHtml(html) {
     const cellText = cells.map(stripTags).filter(Boolean);
     const idMatch = row.match(/\/lead\/view\/(\d+)/i) || row.match(/\bID\D{0,3}(\d{2,})/i);
     const emailMatch = row.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi);
-    const phoneMatch = row.match(/\+?\d[\d\s()\-]{7,}/g);
+    const phone = findPhone(row, cellText);
 
     const id = idMatch ? Number(idMatch[1]) : undefined;
-    if (!id && !emailMatch && !phoneMatch) continue;
+    if (!id && !emailMatch && !phone) continue;
 
     const nameCandidate = cellText.find((t) => /[A-Za-zА-Яа-я]/.test(t) && !/@/.test(t) && !/^\+?\d[\d\s()\-]+$/.test(t));
     const statusCandidate = cellText.find((t) => /нов|акт|обраб|закр|отказ|new|active|close/i.test(t));
@@ -98,7 +120,7 @@ function parseLeadRowsFromHtml(html) {
       id,
       name: nameCandidate || `Лид #${id || items.length + 1}`,
       email: emailMatch ? emailMatch[0] : null,
-      phone: phoneMatch ? phoneMatch[0].trim() : null,
+      phone,
       status: statusCandidate || "—",
       source: "CRM report",
       date: null,
