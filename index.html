@@ -117,6 +117,16 @@
             transition: border-color .2s
         }
 
+        .stat-card.loading .stat-value {
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            background: linear-gradient(90deg, rgba(79, 110, 247, .08), rgba(79, 110, 247, .36), rgba(79, 110, 247, .08));
+            background-size: 220% 100%;
+            border-radius: 8px;
+            min-height: 28px;
+            animation: shimmer 1.3s infinite
+        }
+
         .stat-card::before {
             content: '';
             position: absolute;
@@ -257,6 +267,52 @@
             display: none
         }
 
+        .progress-meta {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: -8px 0 16px;
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .progress-meta.active {
+            display: flex
+        }
+
+        .progress-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 0 rgba(79, 110, 247, .55);
+            animation: dotPulse 1.5s infinite
+        }
+
+        @keyframes dotPulse {
+            0% {
+                transform: scale(.95);
+                box-shadow: 0 0 0 0 rgba(79, 110, 247, .6)
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(79, 110, 247, 0)
+            }
+
+            100% {
+                transform: scale(.95);
+                box-shadow: 0 0 0 0 rgba(79, 110, 247, 0)
+            }
+        }
+
         .progress-bar.active {
             display: block
         }
@@ -287,7 +343,8 @@
             border-radius: 10px;
             font-size: 13px;
             margin-bottom: 16px;
-            display: none
+            display: none;
+            transition: all .25s ease
         }
 
         .status.info {
@@ -575,6 +632,13 @@
                 transform: rotate(360deg)
             }
         }
+
+        @media (max-width: 700px) {
+            .progress-meta {
+                flex-direction: column;
+                align-items: flex-start
+            }
+        }
     </style>
 </head>
 
@@ -623,6 +687,10 @@
 
         <div class="progress-bar" id="progressBar">
             <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-meta" id="progressMeta">
+            <span class="progress-hint"><span class="pulse-dot"></span><span id="progressHint">Подготовка к загрузке...</span></span>
+            <span id="progressPercent">0%</span>
         </div>
         <div class="status" id="statusMsg"></div>
 
@@ -674,20 +742,27 @@
 
     <script>
         let allLeads = [], filteredLeads = [], removedDups = 0, sortField = 'date', sortDir = -1, currentPage = 1;
+        const loadingHints = [
+            'Проверяем подключение к CRM...',
+            'Собираем лиды и контакты...',
+            'Сверяем номера и e-mail для удаления дублей...',
+            'Формируем аккуратную таблицу для работы...'
+        ];
 
         async function startFetch() {
             const btn = document.getElementById('fetchBtn');
             btn.disabled = true;
             btn.innerHTML = '<span class="loader"></span> Загрузка...';
+            setLoadingCards(true);
             showStatus('Подключаемся к CRM...', 'info');
-            showProgress(5);
+            showProgress(5, loadingHints[0]);
             try {
                 const raw = await fetchAll();
-                showProgress(80);
+                showProgress(82, loadingHints[2]);
                 showStatus(`Получено ${raw.length} лидов. Дедупликация...`, 'info');
                 const c = dedup(raw);
                 allLeads = c.leads; removedDups = c.removed;
-                showProgress(100);
+                showProgress(100, 'Готово. Отрисовываем таблицу...');
                 setTimeout(() => hideProgress(), 500);
                 document.getElementById('statTotal').textContent = raw.length.toLocaleString('ru');
                 document.getElementById('statUniq').textContent = allLeads.length.toLocaleString('ru');
@@ -705,6 +780,7 @@
                 showStatus('❌ ' + e.message, 'error');
                 hideProgress();
             }
+            setLoadingCards(false);
             btn.disabled = false;
             btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Обновить';
         }
@@ -720,7 +796,8 @@
                 p++;
                 document.getElementById('statPages').textContent = p;
                 showStatus(`Страниц: ${p}, лидов: ${leads.length}...`, 'info');
-                showProgress(10 + Math.min(65, p * 12));
+                const hint = loadingHints[Math.min(loadingHints.length - 1, Math.floor(p / 2))];
+                showProgress(10 + Math.min(65, p * 12), `${hint} (страница ${p})`);
                 hasMore = j.hasMore;
                 page++;
             }
@@ -834,9 +911,28 @@
             const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `crm_leads_${new Date().toLocaleDateString('ru-RU').replace(/\./g, '-')}.csv`; a.click();
         }
 
-        function showStatus(m, t) { const e = document.getElementById('statusMsg'); e.className = 'status ' + t; e.textContent = m; }
-        function showProgress(p) { document.getElementById('progressBar').classList.add('active'); document.getElementById('progressFill').style.width = p + '%'; }
-        function hideProgress() { document.getElementById('progressBar').classList.remove('active'); document.getElementById('progressFill').style.width = '0%'; }
+        function showStatus(m, t) {
+            const e = document.getElementById('statusMsg');
+            e.className = 'status ' + t;
+            e.textContent = m;
+        }
+        function showProgress(p, hint = '') {
+            document.getElementById('progressBar').classList.add('active');
+            document.getElementById('progressMeta').classList.add('active');
+            document.getElementById('progressFill').style.width = p + '%';
+            document.getElementById('progressPercent').textContent = `${Math.max(0, Math.min(100, Math.round(p)))}%`;
+            if (hint) document.getElementById('progressHint').textContent = hint;
+        }
+        function hideProgress() {
+            document.getElementById('progressBar').classList.remove('active');
+            document.getElementById('progressMeta').classList.remove('active');
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('progressPercent').textContent = '0%';
+            document.getElementById('progressHint').textContent = 'Подготовка к загрузке...';
+        }
+        function setLoadingCards(on) {
+            document.querySelectorAll('.stat-card').forEach((card) => card.classList.toggle('loading', on));
+        }
     </script>
 </body>
 
