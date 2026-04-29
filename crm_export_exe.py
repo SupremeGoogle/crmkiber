@@ -127,6 +127,8 @@ def fetch_phone_from_lead_card(lead_id, session):
     patterns = [
         r"Мобильный\s*</[^>]*>\s*<[^>]*>\s*([^<]+)",
         r"Мобильный\s*[:\-]?\s*([^<\n\r]+)",
+        r"Телефон\s*</[^>]*>\s*<[^>]*>\s*([^<]+)",
+        r"Телефон\s*[:\-]?\s*([^<\n\r]+)",
         r"phone\"\s*:\s*\"([^\"]+)\"",
     ]
     for p in patterns:
@@ -144,6 +146,13 @@ def fetch_phone_from_lead_card(lead_id, session):
             normalized = normalize_phone_text(m2.group(0))
             if normalized:
                 return normalized
+
+    # Last fallback: first plausible RU phone from whole card
+    m3 = re.search(r"(?:\+7|8)\D*\d{3}\D*\d{3}\D*\d{2}\D*\d{2}", html_body)
+    if m3:
+        normalized = normalize_phone_text(m3.group(0))
+        if normalized:
+            return normalized
 
     return ""
 
@@ -300,7 +309,7 @@ def to_csv_rows(leads):
                 "ID": lead.get("id", ""),
                 "Имя": get_field(lead, ("name", "clientName")) or "",
                 "Email": get_field(lead, ("email", "clientEmail")) or "",
-                "Телефон": get_field(lead, ("phone", "clientPhone")) or "",
+                "Телефон": get_field(lead, ("phone", "clientPhone")) or "НЕТ В CRM",
                 "Статус": get_field(lead, ("statusName", "status", "leadStatus")) or "",
                 "Источник": get_field(lead, ("sourceName", "source", "referrer", "source")) or "",
                 "Дата": get_field(lead, ("date", "createdAt", "dateAdd", "updatedAt")) or "",
@@ -385,6 +394,11 @@ def main():
         sys.exit(1)
 
     enrich_missing_phones(leads, session)
+
+    # Guarantee phone value in every row
+    for lead in leads:
+        if not (lead.get("phone") or "").strip():
+            lead["phone"] = "НЕТ В CRM"
 
     unique_leads, removed = dedup(leads)
 
