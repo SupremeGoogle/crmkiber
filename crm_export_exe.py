@@ -52,6 +52,23 @@ def ask_value(title, current):
     return value or current
 
 
+def has_session(session):
+    return bool(session.get("cookie") and session.get("csrf_header") and session.get("csrf_form"))
+
+
+def ensure_session(session):
+    if has_session(session):
+        print("Найдена сохраненная сессия: используем автоматически.")
+        return session
+
+    print("Сессия не найдена. Вставь данные один раз — дальше они сохранятся.")
+    session["cookie"] = ask_value("Вставь Cookie из Network (строка целиком):", session.get("cookie", ""))
+    session["csrf_header"] = ask_value("Вставь X-CSRF-Token:", session.get("csrf_header", ""))
+    session["csrf_form"] = ask_value("Вставь _csrf из form-data:", session.get("csrf_form", ""))
+    save_session(session)
+    return session
+
+
 def strip_tags(text):
     no_tags = re.sub(r"<[^>]+>", " ", text or "")
     return html.unescape(re.sub(r"\s+", " ", no_tags)).strip()
@@ -346,14 +363,20 @@ def save_xlsx(rows, xlsx_path):
 
 def main():
     print("=== CRM Export EXE ===")
-    session = load_session()
-    session["cookie"] = ask_value("Вставь Cookie из Network (строка целиком):", session.get("cookie", ""))
-    session["csrf_header"] = ask_value("Вставь X-CSRF-Token:", session.get("csrf_header", ""))
-    session["csrf_form"] = ask_value("Вставь _csrf из form-data:", session.get("csrf_form", ""))
-    save_session(session)
+    session = ensure_session(load_session())
 
     print("\nЗагружаем лидов...")
-    parsed = post_report(session)
+    try:
+        parsed = post_report(session)
+    except Exception:
+        print("Сохраненная сессия устарела. Нужна однократная переавторизация.")
+        session = {
+            "cookie": "",
+            "csrf_header": "",
+            "csrf_form": "",
+        }
+        session = ensure_session(session)
+        parsed = post_report(session)
     leads = parse_leads_from_report_html(parsed.get("content", ""))
     print(f"Получено лидов: {len(leads)}")
 
