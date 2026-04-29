@@ -1,8 +1,8 @@
 const CONFIG = {
   baseUrl: process.env.BASE_URL || "https://kiberonekaliningrad.s20.online",
   companyId: Number(process.env.COMPANY_ID || "18"),
-  apiKey: process.env.API_KEY,
-  appKey: process.env.APP_KEY,
+  apiKey: process.env.API_KEY || "28cba784-c049-11ed-8535-ac1f6b4782be",
+  appKey: process.env.APP_KEY || "674bacf20ee8960c86c55795bb76690d",
   pageSize: Number(process.env.PAGE_SIZE || "500"),
 };
 
@@ -10,12 +10,6 @@ module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   if (req.method === "OPTIONS") return res.status(200).end();
-
-  if (!CONFIG.apiKey || !CONFIG.appKey) {
-    return res.status(500).json({
-      error: "Missing Vercel env vars: API_KEY and APP_KEY",
-    });
-  }
 
   const page = Number.parseInt(req.query.page || "0", 10);
 
