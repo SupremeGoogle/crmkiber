@@ -19,14 +19,13 @@
             --red: #f43f5e;
             --yellow: #fbbf24;
             --text: #e8ecff;
-            --muted: #6b7280;
-            --card-glow: rgba(79, 110, 247, 0.08);
+            --muted: #6b7280
         }
 
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box
         }
 
         body {
@@ -34,20 +33,17 @@
             color: var(--text);
             font-family: 'Manrope', sans-serif;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow-x: hidden
         }
 
-        /* Background grid */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background-image:
-                linear-gradient(rgba(79, 110, 247, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(79, 110, 247, 0.04) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(79, 110, 247, .04)1px, transparent 1px), linear-gradient(90deg, rgba(79, 110, 247, .04)1px, transparent 1px);
             background-size: 40px 40px;
             pointer-events: none;
-            z-index: 0;
+            z-index: 0
         }
 
         .wrapper {
@@ -55,23 +51,22 @@
             z-index: 1;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 32px 24px;
+            padding: 32px 24px
         }
 
-        /* Header */
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 40px;
             gap: 16px;
-            flex-wrap: wrap;
+            flex-wrap: wrap
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 14px
         }
 
         .logo-icon {
@@ -83,16 +78,16 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            flex-shrink: 0;
-            box-shadow: 0 0 24px rgba(79, 110, 247, 0.4);
+            box-shadow: 0 0 24px rgba(79, 110, 247, .4);
+            flex-shrink: 0
         }
 
         h1 {
             font-family: 'Unbounded', sans-serif;
             font-size: 18px;
             font-weight: 700;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
+            letter-spacing: -.5px;
+            line-height: 1.2
         }
 
         h1 span {
@@ -100,17 +95,16 @@
             font-size: 11px;
             font-weight: 400;
             color: var(--muted);
-            letter-spacing: 0.5px;
+            letter-spacing: .5px;
             margin-top: 2px;
-            font-family: 'Manrope', sans-serif;
+            font-family: 'Manrope', sans-serif
         }
 
-        /* Stats row */
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 12px;
-            margin-bottom: 28px;
+            margin-bottom: 28px
         }
 
         .stat-card {
@@ -120,7 +114,7 @@
             padding: 18px 20px;
             position: relative;
             overflow: hidden;
-            transition: border-color 0.2s;
+            transition: border-color .2s
         }
 
         .stat-card::before {
@@ -132,23 +126,23 @@
             height: 2px;
             background: linear-gradient(90deg, var(--accent), var(--accent2));
             opacity: 0;
-            transition: opacity 0.2s;
+            transition: opacity .2s
         }
 
         .stat-card:hover {
-            border-color: var(--accent);
+            border-color: var(--accent)
         }
 
         .stat-card:hover::before {
-            opacity: 1;
+            opacity: 1
         }
 
         .stat-label {
             font-size: 11px;
             color: var(--muted);
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-bottom: 8px;
+            letter-spacing: .8px;
+            margin-bottom: 8px
         }
 
         .stat-value {
@@ -159,16 +153,15 @@
             background: linear-gradient(135deg, var(--text), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+            background-clip: text
         }
 
-        /* Controls bar */
         .controls {
             display: flex;
             gap: 12px;
             margin-bottom: 20px;
             flex-wrap: wrap;
-            align-items: center;
+            align-items: center
         }
 
         .btn {
@@ -182,51 +175,47 @@
             font-family: 'Manrope', sans-serif;
             font-size: 13px;
             font-weight: 600;
-            transition: all 0.2s;
-            white-space: nowrap;
+            transition: all .2s;
+            white-space: nowrap
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--accent), var(--accent2));
             color: #fff;
-            box-shadow: 0 4px 20px rgba(79, 110, 247, 0.35);
+            box-shadow: 0 4px 20px rgba(79, 110, 247, .35)
         }
 
         .btn-primary:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 28px rgba(79, 110, 247, 0.5);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
+            box-shadow: 0 6px 28px rgba(79, 110, 247, .5)
         }
 
         .btn-primary:disabled {
-            opacity: 0.5;
+            opacity: .5;
             cursor: not-allowed;
-            transform: none;
+            transform: none
         }
 
         .btn-secondary {
             background: var(--surface2);
             color: var(--text);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border)
         }
 
         .btn-secondary:hover {
             border-color: var(--accent);
-            color: var(--accent);
+            color: var(--accent)
         }
 
         .btn-secondary:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
+            opacity: .4;
+            cursor: not-allowed
         }
 
         .search-wrap {
             flex: 1;
             min-width: 200px;
-            position: relative;
+            position: relative
         }
 
         .search-wrap svg {
@@ -235,10 +224,10 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--muted);
-            pointer-events: none;
+            pointer-events: none
         }
 
-        input[type="search"] {
+        input[type=search] {
             width: 100%;
             background: var(--surface);
             border: 1px solid var(--border);
@@ -248,29 +237,28 @@
             font-family: 'Manrope', sans-serif;
             font-size: 13px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color .2s
         }
 
-        input[type="search"]:focus {
-            border-color: var(--accent);
+        input[type=search]:focus {
+            border-color: var(--accent)
         }
 
-        input[type="search"]::placeholder {
-            color: var(--muted);
+        input[type=search]::placeholder {
+            color: var(--muted)
         }
 
-        /* Progress */
         .progress-bar {
             height: 3px;
             background: var(--border);
             border-radius: 2px;
             margin-bottom: 20px;
             overflow: hidden;
-            display: none;
+            display: none
         }
 
         .progress-bar.active {
-            display: block;
+            display: block
         }
 
         .progress-fill {
@@ -279,62 +267,60 @@
             background-size: 200% 100%;
             border-radius: 2px;
             width: 0%;
-            transition: width 0.4s ease;
-            animation: shimmer 1.5s infinite;
+            transition: width .4s ease;
+            animation: shimmer 1.5s infinite
         }
 
         @keyframes shimmer {
             0% {
-                background-position: 0% 50%;
+                background-position: 0% 50%
             }
 
             100% {
-                background-position: 200% 50%;
+                background-position: 200% 50%
             }
         }
 
-        /* Status message */
         .status {
             text-align: center;
             padding: 12px;
             border-radius: 10px;
             font-size: 13px;
             margin-bottom: 16px;
-            display: none;
+            display: none
         }
 
         .status.info {
             display: block;
-            background: rgba(79, 110, 247, 0.1);
-            border: 1px solid rgba(79, 110, 247, 0.3);
-            color: #a5b4fc;
+            background: rgba(79, 110, 247, .1);
+            border: 1px solid rgba(79, 110, 247, .3);
+            color: #a5b4fc
         }
 
         .status.error {
             display: block;
-            background: rgba(244, 63, 94, 0.1);
-            border: 1px solid rgba(244, 63, 94, 0.3);
-            color: #fda4af;
+            background: rgba(244, 63, 94, .1);
+            border: 1px solid rgba(244, 63, 94, .3);
+            color: #fda4af
         }
 
         .status.success {
             display: block;
-            background: rgba(34, 211, 163, 0.1);
-            border: 1px solid rgba(34, 211, 163, 0.3);
-            color: #6ee7b7;
+            background: rgba(34, 211, 163, .1);
+            border: 1px solid rgba(34, 211, 163, .3);
+            color: #6ee7b7
         }
 
-        /* Table */
         .table-wrap {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 16px;
             overflow: hidden;
-            display: none;
+            display: none
         }
 
         .table-wrap.visible {
-            display: block;
+            display: block
         }
 
         .table-header {
@@ -344,7 +330,7 @@
             padding: 16px 20px;
             border-bottom: 1px solid var(--border);
             gap: 12px;
-            flex-wrap: wrap;
+            flex-wrap: wrap
         }
 
         .table-title {
@@ -352,7 +338,7 @@
             font-size: 13px;
             font-weight: 600;
             color: var(--muted);
-            letter-spacing: 0.5px;
+            letter-spacing: .5px
         }
 
         .badge {
@@ -362,17 +348,17 @@
             padding: 2px 10px;
             font-size: 11px;
             font-weight: 700;
-            font-family: 'Unbounded', sans-serif;
+            font-family: 'Unbounded', sans-serif
         }
 
         .table-scroll {
-            overflow-x: auto;
+            overflow-x: auto
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 13px
         }
 
         thead th {
@@ -382,71 +368,65 @@
             font-size: 10px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: .8px;
             color: var(--muted);
             white-space: nowrap;
             cursor: pointer;
             user-select: none;
-            transition: color 0.2s;
+            transition: color .2s;
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 10
         }
 
         thead th:hover {
-            color: var(--accent);
+            color: var(--accent)
         }
 
-        thead th .sort-icon {
-            margin-left: 4px;
-            opacity: 0.4;
-        }
-
-        thead th.sorted .sort-icon {
-            opacity: 1;
-            color: var(--accent);
+        thead th.sorted {
+            color: var(--accent)
         }
 
         tbody tr {
             border-bottom: 1px solid var(--border);
-            transition: background 0.15s;
+            transition: background .15s
         }
 
         tbody tr:last-child {
-            border-bottom: none;
+            border-bottom: none
         }
 
         tbody tr:hover {
-            background: var(--card-glow);
+            background: rgba(79, 110, 247, .05)
         }
 
         tbody td {
             padding: 11px 16px;
             vertical-align: middle;
-            max-width: 220px;
+            max-width: 220px
         }
 
         .id-cell {
             font-family: 'Unbounded', sans-serif;
             font-size: 11px;
             color: var(--muted);
-            white-space: nowrap;
+            white-space: nowrap
         }
 
         .name-cell {
             font-weight: 600;
-            white-space: nowrap;
+            white-space: nowrap
         }
 
         .email-cell {
             color: #93c5fd;
-            font-size: 12px;
+            font-size: 12px
         }
 
         .phone-cell {
             color: var(--green);
             font-size: 12px;
-            white-space: nowrap;
+            white-space: nowrap
         }
 
         .status-pill {
@@ -456,37 +436,37 @@
             font-size: 10px;
             font-weight: 600;
             white-space: nowrap;
-            letter-spacing: 0.3px;
+            letter-spacing: .3px
         }
 
         .pill-new {
-            background: rgba(79, 110, 247, 0.15);
+            background: rgba(79, 110, 247, .15);
             color: #a5b4fc;
-            border: 1px solid rgba(79, 110, 247, 0.25);
+            border: 1px solid rgba(79, 110, 247, .25)
         }
 
         .pill-active {
-            background: rgba(34, 211, 163, 0.12);
+            background: rgba(34, 211, 163, .12);
             color: #6ee7b7;
-            border: 1px solid rgba(34, 211, 163, 0.25);
+            border: 1px solid rgba(34, 211, 163, .25)
         }
 
         .pill-closed {
-            background: rgba(244, 63, 94, 0.1);
+            background: rgba(244, 63, 94, .1);
             color: #fda4af;
-            border: 1px solid rgba(244, 63, 94, 0.2);
+            border: 1px solid rgba(244, 63, 94, .2)
         }
 
         .pill-default {
-            background: rgba(107, 114, 128, 0.15);
+            background: rgba(107, 114, 128, .15);
             color: #9ca3af;
-            border: 1px solid rgba(107, 114, 128, 0.2);
+            border: 1px solid rgba(107, 114, 128, .2)
         }
 
         .date-cell {
             color: var(--muted);
             font-size: 12px;
-            white-space: nowrap;
+            white-space: nowrap
         }
 
         .dup-icon {
@@ -496,11 +476,9 @@
             border-radius: 50%;
             background: var(--yellow);
             margin-right: 6px;
-            vertical-align: middle;
-            flex-shrink: 0;
+            vertical-align: middle
         }
 
-        /* Pagination */
         .pagination {
             display: flex;
             align-items: center;
@@ -510,12 +488,12 @@
             font-size: 12px;
             color: var(--muted);
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 8px
         }
 
         .page-btns {
             display: flex;
-            gap: 6px;
+            gap: 6px
         }
 
         .page-btn {
@@ -528,62 +506,27 @@
             cursor: pointer;
             font-family: 'Manrope', sans-serif;
             font-size: 12px;
-            transition: all 0.15s;
+            transition: all .15s;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: center
         }
 
         .page-btn:hover {
             border-color: var(--accent);
-            color: var(--accent);
+            color: var(--accent)
         }
 
         .page-btn.active {
             background: var(--accent);
             border-color: var(--accent);
             color: #fff;
-            font-weight: 700;
+            font-weight: 700
         }
 
         .page-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        /* Empty state */
-        .empty {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--muted);
-        }
-
-        .empty .big {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-
-        .empty p {
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        /* Loader */
-        .loader {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            flex-shrink: 0;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            opacity: .3;
+            cursor: not-allowed
         }
 
         .dedup-legend {
@@ -594,7 +537,7 @@
             color: var(--muted);
             padding: 10px 20px;
             border-top: 1px solid var(--border);
-            background: rgba(251, 191, 36, 0.04);
+            background: rgba(251, 191, 36, .04)
         }
 
         select {
@@ -606,32 +549,30 @@
             font-family: 'Manrope', sans-serif;
             font-size: 12px;
             cursor: pointer;
-            outline: none;
+            outline: none
         }
 
         select:focus {
-            border-color: var(--accent);
+            border-color: var(--accent)
         }
 
         option {
-            background: var(--surface2);
+            background: var(--surface2)
         }
 
-        @media (max-width: 640px) {
-            h1 {
-                font-size: 15px;
-            }
+        .loader {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, .3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite
+        }
 
-            .stat-value {
-                font-size: 20px;
-            }
-
-            tbody td {
-                padding: 9px 10px;
-            }
-
-            thead th {
-                padding: 10px 10px;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
             }
         }
     </style>
@@ -639,14 +580,10 @@
 
 <body>
     <div class="wrapper">
-
         <header>
             <div class="logo">
                 <div class="logo-icon">🎯</div>
-                <h1>
-                    CRM Лиды
-                    <span>KiberOne Kaliningrad · s20.online</span>
-                </h1>
+                <h1>CRM Лиды<span>KiberOne Kaliningrad · s20.online</span></h1>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
                 <button class="btn btn-primary" id="fetchBtn" onclick="startFetch()">
@@ -660,12 +597,11 @@
                     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    CSV
+                    Скачать CSV
                 </button>
             </div>
         </header>
 
-        <!-- Stats -->
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-label">Всего лидов</div>
@@ -680,20 +616,16 @@
                 <div class="stat-value" id="statDups">—</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Загружено страниц</div>
+                <div class="stat-label">Страниц загружено</div>
                 <div class="stat-value" id="statPages">—</div>
             </div>
         </div>
 
-        <!-- Progress -->
         <div class="progress-bar" id="progressBar">
             <div class="progress-fill" id="progressFill"></div>
         </div>
-
-        <!-- Status -->
         <div class="status" id="statusMsg"></div>
 
-        <!-- Controls -->
         <div class="controls" id="controlsRow" style="display:none">
             <div class="search-wrap">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -711,7 +643,6 @@
             </select>
         </div>
 
-        <!-- Table -->
         <div class="table-wrap" id="tableWrap">
             <div class="table-header">
                 <span class="table-title">БАЗА ЛИДОВ <span class="badge" id="countBadge">0</span></span>
@@ -721,14 +652,13 @@
                 <table>
                     <thead>
                         <tr>
-                            <th onclick="sortBy('id')">ID <span class="sort-icon" id="sort_id">↕</span></th>
-                            <th onclick="sortBy('name')">Имя <span class="sort-icon" id="sort_name">↕</span></th>
-                            <th onclick="sortBy('email')">E-mail <span class="sort-icon" id="sort_email">↕</span></th>
-                            <th onclick="sortBy('phone')">Телефон <span class="sort-icon" id="sort_phone">↕</span></th>
-                            <th onclick="sortBy('status')">Статус <span class="sort-icon" id="sort_status">↕</span></th>
-                            <th onclick="sortBy('source')">Источник <span class="sort-icon" id="sort_source">↕</span>
-                            </th>
-                            <th onclick="sortBy('date')">Дата <span class="sort-icon" id="sort_date">↕</span></th>
+                            <th onclick="sortBy('id',this)">ID</th>
+                            <th onclick="sortBy('name',this)">Имя</th>
+                            <th onclick="sortBy('email',this)">E-mail</th>
+                            <th onclick="sortBy('phone',this)">Телефон</th>
+                            <th onclick="sortBy('status',this)">Статус</th>
+                            <th onclick="sortBy('source',this)">Источник</th>
+                            <th onclick="sortBy('date',this)" class="sorted">Дата ↓</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
@@ -736,435 +666,177 @@
             </div>
             <div class="dedup-legend" id="dupLegend" style="display:none">
                 <span class="dup-icon"></span>
-                <span>Жёлтая точка — найден другой лид с таким же email/телефоном (оставлен новейший)</span>
+                <span>Жёлтая точка — был дублирующий лид (удалён, оставлен новейший)</span>
             </div>
             <div class="pagination" id="pagination"></div>
         </div>
-
     </div>
 
     <script>
-        // ═══════════════════════════════════════════════
-        // КОНФИГУРАЦИЯ
-        // ═══════════════════════════════════════════════
-        const CONFIG = {
-            baseUrl: 'https://kiberonekaliningrad.s20.online',
-            companyId: 18,
-            apiKey: '28cba784-c049-11ed-8535-ac1f6b4782be',
-            appKey: '674bacf20ee8960c86c55795bb76690d',
-            pageSize: 500 // лидов за запрос к API
-        };
+        let allLeads = [], filteredLeads = [], removedDups = 0, sortField = 'date', sortDir = -1, currentPage = 1;
 
-        // ═══════════════════════════════════════════════
-        // СОСТОЯНИЕ
-        // ═══════════════════════════════════════════════
-        let allLeads = [];       // все уникальные лиды
-        let filteredLeads = [];  // после поиска
-        let removedDups = 0;
-        let sortField = 'date';
-        let sortDir = -1;
-        let currentPage = 1;
-
-        // ═══════════════════════════════════════════════
-        // FETCH LEADS
-        // ═══════════════════════════════════════════════
         async function startFetch() {
             const btn = document.getElementById('fetchBtn');
             btn.disabled = true;
             btn.innerHTML = '<span class="loader"></span> Загрузка...';
-
-            showStatus('Подключаемся к s20.online...', 'info');
+            showStatus('Подключаемся к CRM...', 'info');
             showProgress(5);
-
             try {
-                const raw = await fetchAllLeads();
+                const raw = await fetchAll();
                 showProgress(80);
-                showStatus(`Получено ${raw.length} лидов. Очищаем дубли...`, 'info');
-
-                const cleaned = deduplicate(raw);
-                allLeads = cleaned.leads;
-                removedDups = cleaned.removed;
-
+                showStatus(`Получено ${raw.length} лидов. Дедупликация...`, 'info');
+                const c = dedup(raw);
+                allLeads = c.leads; removedDups = c.removed;
                 showProgress(100);
-                setTimeout(() => hideProgress(), 600);
-
-                updateStats(raw.length, allLeads.length, removedDups);
+                setTimeout(() => hideProgress(), 500);
+                document.getElementById('statTotal').textContent = raw.length.toLocaleString('ru');
+                document.getElementById('statUniq').textContent = allLeads.length.toLocaleString('ru');
+                document.getElementById('statDups').textContent = removedDups.toLocaleString('ru');
                 filterLeads();
                 document.getElementById('tableWrap').classList.add('visible');
                 document.getElementById('controlsRow').style.display = 'flex';
                 document.getElementById('exportBtn').disabled = false;
-
-                const msg = removedDups > 0
-                    ? `✅ Готово! ${allLeads.length} уникальных лидов (удалено ${removedDups} дублей)`
-                    : `✅ Готово! ${allLeads.length} лидов — дублей не найдено`;
-                showStatus(msg, 'success');
-
                 if (removedDups > 0) {
                     document.getElementById('dupLegend').style.display = 'flex';
-                    document.getElementById('dupInfo').textContent = `Удалено дублей: ${removedDups}`;
+                    document.getElementById('dupInfo').textContent = 'Удалено дублей: ' + removedDups;
                 }
-
+                showStatus(`✅ Готово! ${allLeads.length} уникальных лидов` + (removedDups ? ` (удалено ${removedDups} дублей)` : ' — дублей нет'), 'success');
             } catch (e) {
-                console.error(e);
-                showStatus('❌ Ошибка: ' + e.message + (e.hint ? ' · ' + e.hint : ''), 'error');
+                showStatus('❌ ' + e.message, 'error');
                 hideProgress();
             }
-
             btn.disabled = false;
             btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Обновить';
         }
 
-        async function fetchAllLeads() {
-            let page = 0;
-            let leads = [];
-            let hasMore = true;
-            let pagesLoaded = 0;
-
+        async function fetchAll() {
+            let page = 0, leads = [], hasMore = true, p = 0;
             while (hasMore) {
-                const url = `${CONFIG.baseUrl}/v2api/${CONFIG.companyId}/lead/index`;
-                const body = {
-                    auth: { id: CONFIG.companyId, apiKey: CONFIG.apiKey },
-                    model: {
-                        page: page,
-                        count: CONFIG.pageSize
-                    }
-                };
-
-                let resp;
-                try {
-                    resp = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Api-Key': CONFIG.apiKey,
-                            'X-APP-KEY': CONFIG.appKey,
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(body)
-                    });
-                } catch (e) {
-                    if (e.name === 'TypeError') {
-                        throw Object.assign(new Error('CORS-блокировка браузером.'), {
-                            hint: 'Попробуйте открыть файл в Chrome с флагом --disable-web-security, или используйте Firefox.'
-                        });
-                    }
-                    throw e;
-                }
-
-                if (!resp.ok) {
-                    const txt = await resp.text().catch(() => '');
-                    throw new Error(`API вернул ${resp.status}: ${txt.slice(0, 200)}`);
-                }
-
-                const json = await resp.json();
-
-                // Разные форматы ответа s20
-                let items = [];
-                if (Array.isArray(json)) {
-                    items = json;
-                } else if (json.data && Array.isArray(json.data)) {
-                    items = json.data;
-                } else if (json.items && Array.isArray(json.items)) {
-                    items = json.items;
-                } else if (json.leads && Array.isArray(json.leads)) {
-                    items = json.leads;
-                }
-
-                leads = leads.concat(items);
-                pagesLoaded++;
-
-                document.getElementById('statPages').textContent = pagesLoaded;
-                showProgress(10 + Math.min(65, pagesLoaded * 15));
-                showStatus(`Загружено страниц: ${pagesLoaded}, лидов: ${leads.length}...`, 'info');
-
-                // Продолжать, если получили полную страницу
-                if (items.length < CONFIG.pageSize) {
-                    hasMore = false;
-                } else {
-                    page++;
-                }
+                const r = await fetch(`/api/leads?page=${page}`);
+                if (!r.ok) { const t = await r.text(); throw new Error(t || `HTTP ${r.status}`); }
+                const j = await r.json();
+                if (j.error) throw new Error(j.error);
+                leads = leads.concat(j.items || []);
+                p++;
+                document.getElementById('statPages').textContent = p;
+                showStatus(`Страниц: ${p}, лидов: ${leads.length}...`, 'info');
+                showProgress(10 + Math.min(65, p * 12));
+                hasMore = j.hasMore;
+                page++;
             }
-
             return leads;
         }
 
-        // ═══════════════════════════════════════════════
-        // ДЕДУПЛИКАЦИЯ
-        // ═══════════════════════════════════════════════
-        function normalizePhone(p) {
-            if (!p) return null;
-            const d = p.replace(/\D/g, '');
-            if (d.length < 7) return null;
-            return d.slice(-10); // последние 10 цифр
-        }
+        function normalPhone(p) { if (!p) return null; const d = p.replace(/\D/g, ''); return d.length >= 7 ? d.slice(-10) : null; }
+        function normalEmail(e) { return e ? e.trim().toLowerCase() : null; }
+        function gName(l) { return l.name || l.clientName || (l.firstName || l.lastName ? `${l.firstName || ''} ${l.lastName || ''}`.trim() : null) || (l.client ? (l.client.name || l.client.surname ? `${l.client.name || ''} ${l.client.surname || ''}`.trim() : null) : null) || `Лид #${l.id}`; }
+        function gEmail(l) { return l.email || l.clientEmail || (l.emails && l.emails[0] && (l.emails[0].value || l.emails[0])) || (l.client && l.client.email) || null; }
+        function gPhone(l) { return l.phone || l.clientPhone || (l.phones && l.phones[0] && (l.phones[0].value || l.phones[0])) || (l.client && l.client.phone) || null; }
+        function gStatus(l) { return l.statusName || l.status || l.leadStatus || '—'; }
+        function gSource(l) { return l.sourceName || l.source || l.referrer || '—'; }
+        function gDate(l) { return l.createdAt || l.dateAdd || l.date || l.updatedAt || ''; }
 
-        function normalizeEmail(e) {
-            if (!e) return null;
-            return e.trim().toLowerCase();
-        }
-
-        function getLeadPhone(lead) {
-            // s20 хранит телефон по-разному
-            if (lead.phone) return lead.phone;
-            if (lead.clientPhone) return lead.clientPhone;
-            if (lead.phones && lead.phones[0]) return lead.phones[0].value || lead.phones[0];
-            if (lead.client && lead.client.phone) return lead.client.phone;
-            return null;
-        }
-
-        function getLeadEmail(lead) {
-            if (lead.email) return lead.email;
-            if (lead.clientEmail) return lead.clientEmail;
-            if (lead.emails && lead.emails[0]) return lead.emails[0].value || lead.emails[0];
-            if (lead.client && lead.client.email) return lead.client.email;
-            return null;
-        }
-
-        function getLeadDate(lead) {
-            return lead.createdAt || lead.dateAdd || lead.date || lead.updatedAt || '';
-        }
-
-        function deduplicate(leads) {
-            // Сортируем — новейшие первыми
-            const sorted = [...leads].sort((a, b) => {
-                const da = new Date(getLeadDate(a) || 0);
-                const db = new Date(getLeadDate(b) || 0);
-                return db - da;
-            });
-
-            const seenPhone = new Map();
-            const seenEmail = new Map();
-            const result = [];
-            let removed = 0;
-            const dupIds = new Set();
-
-            for (const lead of sorted) {
-                const phone = normalizePhone(getLeadPhone(lead));
-                const email = normalizeEmail(getLeadEmail(lead));
-                let isDup = false;
-
-                if (phone && seenPhone.has(phone)) { isDup = true; dupIds.add(seenPhone.get(phone)); }
-                if (email && seenEmail.has(email)) { isDup = true; dupIds.add(seenEmail.get(email)); }
-
-                if (!isDup) {
-                    if (phone) seenPhone.set(phone, lead.id);
-                    if (email) seenEmail.set(email, lead.id);
-                    result.push({ ...lead, _isDupOrigin: false });
-                } else {
-                    removed++;
-                }
+        function dedup(leads) {
+            const sorted = [...leads].sort((a, b) => new Date(gDate(b) || 0) - new Date(gDate(a) || 0));
+            const sp = new Map(), se = new Map(), result = [];
+            let removed = 0; const dupIds = new Set();
+            for (const l of sorted) {
+                const ph = normalPhone(gPhone(l)), em = normalEmail(gEmail(l));
+                let dup = false;
+                if (ph && sp.has(ph)) { dup = true; dupIds.add(sp.get(ph)); }
+                if (em && se.has(em)) { dup = true; dupIds.add(se.get(em)); }
+                if (!dup) { if (ph) sp.set(ph, l.id); if (em) se.set(em, l.id); result.push(l); }
+                else removed++;
             }
-
-            // Пометить оставшиеся лиды, у которых был дубль
-            result.forEach(l => { l._wasDuped = dupIds.has(l.id); });
-
+            result.forEach(l => l._wasDuped = dupIds.has(l.id));
             return { leads: result, removed };
         }
 
-        // ═══════════════════════════════════════════════
-        // RENDER
-        // ═══════════════════════════════════════════════
         function filterLeads() {
-            const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+            const q = (document.getElementById('searchInput').value || '').toLowerCase();
             currentPage = 1;
-
-            if (!q) {
-                filteredLeads = [...allLeads];
-            } else {
-                filteredLeads = allLeads.filter(l => {
-                    const name = getLeadName(l).toLowerCase();
-                    const email = (getLeadEmail(l) || '').toLowerCase();
-                    const phone = (getLeadPhone(l) || '').toLowerCase();
-                    return name.includes(q) || email.includes(q) || phone.includes(q);
-                });
-            }
-
-            sortLeads();
-            renderTable();
+            filteredLeads = q ? allLeads.filter(l => gName(l).toLowerCase().includes(q) || (gEmail(l) || '').toLowerCase().includes(q) || (gPhone(l) || '').includes(q)) : [...allLeads];
+            sortLeads(); renderTable();
         }
 
-        function getLeadName(l) {
-            if (l.name) return l.name;
-            if (l.clientName) return l.clientName;
-            if (l.firstName || l.lastName) return `${l.firstName || ''} ${l.lastName || ''}`.trim();
-            if (l.client) return `${l.client.name || ''} ${l.client.surname || ''}`.trim() || `ID ${l.id}`;
-            return `Лид #${l.id}`;
+        function sortBy(f, th) {
+            if (sortField === f) sortDir *= -1; else { sortField = f; sortDir = 1; }
+            document.querySelectorAll('thead th').forEach(t => { t.classList.remove('sorted'); t.textContent = t.textContent.replace(/ [↑↓]/, ''); });
+            th.classList.add('sorted'); th.textContent += ' ' + (sortDir > 0 ? '↑' : '↓');
+            currentPage = 1; sortLeads(); renderTable();
         }
 
-        function getLeadStatus(l) {
-            return l.statusName || l.status || l.leadStatus || '—';
+        function sortLeads() {
+            filteredLeads.sort((a, b) => {
+                let va, vb;
+                const m = { id: (x) => +(x.id || 0), name: gName, email: (x) => gEmail(x) || '', phone: (x) => gPhone(x) || '', status: gStatus, source: gSource, date: (x) => gDate(x) || '' };
+                va = (m[sortField] || m.date)(a); vb = (m[sortField] || m.date)(b);
+                return va < vb ? -sortDir : va > vb ? sortDir : 0;
+            });
         }
 
-        function getLeadSource(l) {
-            return l.sourceName || l.source || l.referrer || '—';
-        }
-
-        function statusClass(s) {
+        function statusCls(s) {
             const v = (s || '').toLowerCase();
             if (v.includes('нов') || v.includes('new')) return 'pill-new';
             if (v.includes('акт') || v.includes('active') || v.includes('обраб')) return 'pill-active';
             if (v.includes('закр') || v.includes('close') || v.includes('отказ')) return 'pill-closed';
             return 'pill-default';
         }
-
-        function formatDate(d) {
-            if (!d) return '—';
-            const dt = new Date(d);
-            if (isNaN(dt)) return d;
-            return dt.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        }
-
-        function sortBy(field) {
-            if (sortField === field) { sortDir *= -1; } else { sortField = field; sortDir = 1; }
-            document.querySelectorAll('.sort-icon').forEach(el => el.textContent = '↕');
-            document.getElementById(`sort_${field}`).textContent = sortDir > 0 ? '↑' : '↓';
-            document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
-            event.currentTarget.classList.add('sorted');
-            currentPage = 1;
-            sortLeads();
-            renderTable();
-        }
-
-        function sortLeads() {
-            filteredLeads.sort((a, b) => {
-                let va, vb;
-                switch (sortField) {
-                    case 'id': va = +(a.id || 0); vb = +(b.id || 0); break;
-                    case 'name': va = getLeadName(a); vb = getLeadName(b); break;
-                    case 'email': va = getLeadEmail(a) || ''; vb = getLeadEmail(b) || ''; break;
-                    case 'phone': va = getLeadPhone(a) || ''; vb = getLeadPhone(b) || ''; break;
-                    case 'status': va = getLeadStatus(a); vb = getLeadStatus(b); break;
-                    case 'source': va = getLeadSource(a); vb = getLeadSource(b); break;
-                    case 'date': va = getLeadDate(a) || ''; vb = getLeadDate(b) || ''; break;
-                    default: return 0;
-                }
-                if (va < vb) return -1 * sortDir;
-                if (va > vb) return 1 * sortDir;
-                return 0;
-            });
-        }
+        function fmtDate(d) { if (!d) return '—'; const dt = new Date(d); return isNaN(dt) ? d : dt.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+        function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
         function renderTable() {
-            const perPage = parseInt(document.getElementById('perPage').value);
-            const start = (currentPage - 1) * perPage;
-            const page = filteredLeads.slice(start, start + perPage);
-
+            const pp = parseInt(document.getElementById('perPage').value);
+            const page = filteredLeads.slice((currentPage - 1) * pp, currentPage * pp);
             document.getElementById('countBadge').textContent = filteredLeads.length;
-
             const tbody = document.getElementById('tableBody');
-            if (filteredLeads.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted)">Ничего не найдено</td></tr>`;
-                renderPagination(0, perPage);
-                return;
-            }
-
+            if (!filteredLeads.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted)">Ничего не найдено</td></tr>'; document.getElementById('pagination').innerHTML = ''; return; }
             tbody.innerHTML = page.map(l => {
-                const dupDot = l._wasDuped ? '<span class="dup-icon" title="Был дублирующий лид"></span>' : '';
-                const email = getLeadEmail(l);
-                const phone = getLeadPhone(l);
-                const status = getLeadStatus(l);
+                const em = gEmail(l), ph = gPhone(l), st = gStatus(l);
                 return `<tr>
-      <td class="id-cell">${l.id || '—'}</td>
-      <td class="name-cell">${dupDot}${escHtml(getLeadName(l))}</td>
-      <td class="email-cell">${email ? `<a href="mailto:${escHtml(email)}" style="color:inherit;text-decoration:none">${escHtml(email)}</a>` : '<span style="color:var(--muted)">—</span>'}</td>
-      <td class="phone-cell">${phone ? escHtml(phone) : '<span style="color:var(--muted)">—</span>'}</td>
-      <td><span class="status-pill ${statusClass(status)}">${escHtml(status)}</span></td>
-      <td style="color:var(--muted);font-size:12px">${escHtml(getLeadSource(l))}</td>
-      <td class="date-cell">${formatDate(getLeadDate(l))}</td>
+      <td class="id-cell">${esc(l.id || '—')}</td>
+      <td class="name-cell">${l._wasDuped ? '<span class="dup-icon" title="Был дубль"></span>' : ''}${esc(gName(l))}</td>
+      <td class="email-cell">${em ? `<a href="mailto:${esc(em)}" style="color:inherit;text-decoration:none">${esc(em)}</a>` : '<span style="color:var(--muted)">—</span>'}</td>
+      <td class="phone-cell">${ph ? esc(ph) : '<span style="color:var(--muted)">—</span>'}</td>
+      <td><span class="status-pill ${statusCls(st)}">${esc(st)}</span></td>
+      <td style="color:var(--muted);font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(gSource(l))}</td>
+      <td class="date-cell">${fmtDate(gDate(l))}</td>
     </tr>`;
             }).join('');
-
-            renderPagination(filteredLeads.length, perPage);
+            renderPagination(filteredLeads.length, pp);
         }
 
-        function renderPagination(total, perPage) {
-            const totalPages = Math.ceil(total / perPage);
-            const el = document.getElementById('pagination');
-            if (totalPages <= 1) { el.innerHTML = `<span>${total} записей</span>`; return; }
-
-            const start = (currentPage - 1) * perPage + 1;
-            const end = Math.min(currentPage * perPage, total);
-
+        function renderPagination(total, pp) {
+            const totalP = Math.ceil(total / pp), el = document.getElementById('pagination');
+            if (totalP <= 1) { el.innerHTML = `<span>${total} записей</span>`; return; }
+            const s = (currentPage - 1) * pp + 1, e = Math.min(currentPage * pp, total);
             let pages = '';
-            const range = 2;
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === 1 || i === totalPages || (i >= currentPage - range && i <= currentPage + range)) {
-                    pages += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
-                } else if (i === currentPage - range - 1 || i === currentPage + range + 1) {
-                    pages += `<span style="color:var(--muted);padding:0 4px">…</span>`;
-                }
+            for (let i = 1; i <= totalP; i++) {
+                if (i === 1 || i === totalP || Math.abs(i - currentPage) <= 2) pages += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
+                else if (Math.abs(i - currentPage) === 3) pages += `<span style="color:var(--muted);padding:0 4px">…</span>`;
             }
-
-            el.innerHTML = `
-    <span>${start}–${end} из ${total}</span>
-    <div class="page-btns">
-      <button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹</button>
-      ${pages}
-      <button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>›</button>
-    </div>`;
+            el.innerHTML = `<span>${s}–${e} из ${total}</span><div class="page-btns"><button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹</button>${pages}<button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage === totalP ? 'disabled' : ''}>›</button></div>`;
         }
 
         function goPage(p) {
-            const perPage = parseInt(document.getElementById('perPage').value);
-            const totalPages = Math.ceil(filteredLeads.length / perPage);
-            if (p < 1 || p > totalPages) return;
-            currentPage = p;
-            renderTable();
+            const pp = parseInt(document.getElementById('perPage').value);
+            const tp = Math.ceil(filteredLeads.length / pp);
+            if (p < 1 || p > tp) return;
+            currentPage = p; renderTable();
             document.querySelector('.table-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // ═══════════════════════════════════════════════
-        // EXPORT CSV
-        // ═══════════════════════════════════════════════
         function exportCSV() {
             const rows = [['ID', 'Имя', 'Email', 'Телефон', 'Статус', 'Источник', 'Дата']];
-            for (const l of filteredLeads) {
-                rows.push([
-                    l.id || '',
-                    getLeadName(l),
-                    getLeadEmail(l) || '',
-                    getLeadPhone(l) || '',
-                    getLeadStatus(l),
-                    getLeadSource(l),
-                    getLeadDate(l) ? new Date(getLeadDate(l)).toLocaleDateString('ru-RU') : ''
-                ]);
-            }
+            for (const l of filteredLeads) rows.push([l.id || '', gName(l), gEmail(l) || '', gPhone(l) || '', gStatus(l), gSource(l), gDate(l) ? new Date(gDate(l)).toLocaleDateString('ru-RU') : '']);
             const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
-            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `crm_leads_${new Date().toLocaleDateString('ru-RU').replace(/\./g, '-')}.csv`;
-            a.click();
+            const b = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `crm_leads_${new Date().toLocaleDateString('ru-RU').replace(/\./g, '-')}.csv`; a.click();
         }
 
-        // ═══════════════════════════════════════════════
-        // HELPERS
-        // ═══════════════════════════════════════════════
-        function showStatus(msg, type) {
-            const el = document.getElementById('statusMsg');
-            el.className = 'status ' + type;
-            el.textContent = msg;
-        }
-
-        function showProgress(pct) {
-            document.getElementById('progressBar').classList.add('active');
-            document.getElementById('progressFill').style.width = pct + '%';
-        }
-
-        function hideProgress() {
-            document.getElementById('progressBar').classList.remove('active');
-            document.getElementById('progressFill').style.width = '0%';
-        }
-
-        function updateStats(total, uniq, dups) {
-            document.getElementById('statTotal').textContent = total.toLocaleString('ru');
-            document.getElementById('statUniq').textContent = uniq.toLocaleString('ru');
-            document.getElementById('statDups').textContent = dups.toLocaleString('ru');
-        }
-
-        function escHtml(s) {
-            return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        }
+        function showStatus(m, t) { const e = document.getElementById('statusMsg'); e.className = 'status ' + t; e.textContent = m; }
+        function showProgress(p) { document.getElementById('progressBar').classList.add('active'); document.getElementById('progressFill').style.width = p + '%'; }
+        function hideProgress() { document.getElementById('progressBar').classList.remove('active'); document.getElementById('progressFill').style.width = '0%'; }
     </script>
 </body>
 
