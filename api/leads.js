@@ -14,24 +14,39 @@ module.exports = async (req, res) => {
   const page = Number.parseInt(req.query.page || "0", 10);
 
   try {
-    const url = `${CONFIG.baseUrl}/v2api/${CONFIG.companyId}/lead/index`;
-    const upstream = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Api-Key": CONFIG.apiKey,
-        "X-APP-KEY": CONFIG.appKey,
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        auth: { id: CONFIG.companyId, apiKey: CONFIG.apiKey },
-        model: { page: Number.isFinite(page) ? page : 0, count: CONFIG.pageSize },
-      }),
+    const candidates = [
+      `${CONFIG.baseUrl}/v2api/${CONFIG.companyId}/lead/index`,
+      `${CONFIG.baseUrl}/v2api/lead/index`,
+      `${CONFIG.baseUrl}/api/v2/lead/index`,
+    ];
+
+    const payload = JSON.stringify({
+      auth: { id: CONFIG.companyId, apiKey: CONFIG.apiKey },
+      model: { page: Number.isFinite(page) ? page : 0, count: CONFIG.pageSize },
     });
 
-    if (!upstream.ok) {
+    const headers = {
+      "Content-Type": "application/json",
+      "X-Api-Key": CONFIG.apiKey,
+      "X-APP-KEY": CONFIG.appKey,
+      Accept: "application/json",
+    };
+
+    let upstream = null;
+    let lastError = "";
+    let usedUrl = "";
+
+    for (const url of candidates) {
+      usedUrl = url;
+      upstream = await fetch(url, { method: "POST", headers, body: payload });
+      if (upstream.ok) break;
       const text = await upstream.text();
-      return res.status(502).json({ error: `API error ${upstream.status}: ${text.slice(0, 300)}` });
+      lastError = `API ${upstream.status} at ${url}: ${text.slice(0, 200)}`;
+      upstream = null;
+    }
+
+    if (!upstream) {
+      return res.status(502).json({ error: lastError || "CRM API request failed" });
     }
 
     const data = await upstream.json();
@@ -42,6 +57,7 @@ module.exports = async (req, res) => {
     return res.status(200).json({
       items,
       hasMore: items.length >= CONFIG.pageSize,
+      sourceUrl: usedUrl,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message || "Unexpected server error" });
