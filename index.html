@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Лиды — KiberOne Kaliningrad</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Manrope:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg: #0b0e1a;
+            --surface: #131728;
+            --surface2: #1a1f38;
+            --border: #252b4a;
+            --accent: #4f6ef7;
+            --accent2: #7c3aed;
+            --green: #22d3a3;
+            --red: #f43f5e;
+            --yellow: #fbbf24;
+            --text: #e8ecff;
+            --muted: #6b7280;
+            --card-glow: rgba(79, 110, 247, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Manrope', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(79, 110, 247, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(79, 110, 247, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 0 24px rgba(79, 110, 247, 0.4);
+        }
+
+        h1 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        h1 span {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        /* Stats row */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 20px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Controls bar */
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Manrope', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(79, 110, 247, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 28px rgba(79, 110, 247, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .search-wrap {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-wrap svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        input[type="search"] {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px 10px 38px;
+            color: var(--text);
+            font-family: 'Manrope', sans-serif;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="search"]:focus {
+            border-color: var(--accent);
+        }
+
+        input[type="search"]::placeholder {
+            color: var(--muted);
+        }
+
+        /* Progress */
+        .progress-bar {
+            height: 3px;
+            background: var(--border);
+            border-radius: 2px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar.active {
+            display: block;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--green));
+            background-size: 200% 100%;
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.4s ease;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+
+        /* Status message */
+        .status {
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .status.info {
+            display: block;
+            background: rgba(79, 110, 247, 0.1);
+            border: 1px solid rgba(79, 110, 247, 0.3);
+            color: #a5b4fc;
+        }
+
+        .status.error {
+            display: block;
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #fda4af;
+        }
+
+        .status.success {
+            display: block;
+            background: rgba(34, 211, 163, 0.1);
+            border: 1px solid rgba(34, 211, 163, 0.3);
+            color: #6ee7b7;
+        }
+
+        /* Table */
+        .table-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .table-wrap.visible {
+            display: block;
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .table-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'Unbounded', sans-serif;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead th {
+            background: var(--surface2);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--muted);
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        thead th:hover {
+            color: var(--accent);
+        }
+
+        thead th .sort-icon {
+            margin-left: 4px;
+            opacity: 0.4;
+        }
+
+        thead th.sorted .sort-icon {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: var(--card-glow);
+        }
+
+        tbody td {
+            padding: 11px 16px;
+            vertical-align: middle;
+            max-width: 220px;
+        }
+
+        .id-cell {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 11px;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .name-cell {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .email-cell {
+            color: #93c5fd;
+            font-size: 12px;
+        }
+
+        .phone-cell {
+            color: var(--green);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+        }
+
+        .pill-new {
+            background: rgba(79, 110, 247, 0.15);
+            color: #a5b4fc;
+            border: 1px solid rgba(79, 110, 247, 0.25);
+        }
+
+        .pill-active {
+            background: rgba(34, 211, 163, 0.12);
+            color: #6ee7b7;
+            border: 1px solid rgba(34, 211, 163, 0.25);
+        }
+
+        .pill-closed {
+            background: rgba(244, 63, 94, 0.1);
+            color: #fda4af;
+            border: 1px solid rgba(244, 63, 94, 0.2);
+        }
+
+        .pill-default {
+            background: rgba(107, 114, 128, 0.15);
+            color: #9ca3af;
+            border: 1px solid rgba(107, 114, 128, 0.2);
+        }
+
+        .date-cell {
+            color: var(--muted);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .dup-icon {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--yellow);
+            margin-right: 6px;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--muted);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .page-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .page-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text);
+            cursor: pointer;
+            font-family: 'Manrope', sans-serif;
+            font-size: 12px;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .page-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Empty state */
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+
+        .empty .big {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .empty p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Loader */
+        .loader {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .dedup-legend {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--muted);
+            padding: 10px 20px;
+            border-top: 1px solid var(--border);
+            background: rgba(251, 191, 36, 0.04);
+        }
+
+        select {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            padding: 8px 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        select:focus {
+            border-color: var(--accent);
+        }
+
+        option {
+            background: var(--surface2);
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 15px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            tbody td {
+                padding: 9px 10px;
+            }
+
+            thead th {
+                padding: 10px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🎯</div>
+                <h1>
+                    CRM Лиды
+                    <span>KiberOne Kaliningrad · s20.online</span>
+                </h1>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn btn-primary" id="fetchBtn" onclick="startFetch()">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Загрузить лиды
+                </button>
+                <button class="btn btn-secondary" id="exportBtn" onclick="exportCSV()" disabled>
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    CSV
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Всего лидов</div>
+                <div class="stat-value" id="statTotal">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Уникальных</div>
+                <div class="stat-value" id="statUniq">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Дублей удалено</div>
+                <div class="stat-value" id="statDups">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Загружено страниц</div>
+                <div class="stat-value" id="statPages">—</div>
+            </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- Status -->
+        <div class="status" id="statusMsg"></div>
+
+        <!-- Controls -->
+        <div class="controls" id="controlsRow" style="display:none">
+            <div class="search-wrap">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35" />
+                </svg>
+                <input type="search" id="searchInput" placeholder="Поиск по имени, email, телефону..."
+                    oninput="filterLeads()">
+            </div>
+            <select id="perPage" onchange="renderTable()">
+                <option value="25">25 / стр</option>
+                <option value="50" selected>50 / стр</option>
+                <option value="100">100 / стр</option>
+                <option value="9999">Все</option>
+            </select>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap" id="tableWrap">
+            <div class="table-header">
+                <span class="table-title">БАЗА ЛИДОВ <span class="badge" id="countBadge">0</span></span>
+                <span style="font-size:12px;color:var(--muted)" id="dupInfo"></span>
+            </div>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th onclick="sortBy('id')">ID <span class="sort-icon" id="sort_id">↕</span></th>
+                            <th onclick="sortBy('name')">Имя <span class="sort-icon" id="sort_name">↕</span></th>
+                            <th onclick="sortBy('email')">E-mail <span class="sort-icon" id="sort_email">↕</span></th>
+                            <th onclick="sortBy('phone')">Телефон <span class="sort-icon" id="sort_phone">↕</span></th>
+                            <th onclick="sortBy('status')">Статус <span class="sort-icon" id="sort_status">↕</span></th>
+                            <th onclick="sortBy('source')">Источник <span class="sort-icon" id="sort_source">↕</span>
+                            </th>
+                            <th onclick="sortBy('date')">Дата <span class="sort-icon" id="sort_date">↕</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+            <div class="dedup-legend" id="dupLegend" style="display:none">
+                <span class="dup-icon"></span>
+                <span>Жёлтая точка — найден другой лид с таким же email/телефоном (оставлен новейший)</span>
+            </div>
+            <div class="pagination" id="pagination"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════
+        // КОНФИГУРАЦИЯ
+        // ═══════════════════════════════════════════════
+        const CONFIG = {
+            baseUrl: 'https://kiberonekaliningrad.s20.online',
+            companyId: 18,
+            apiKey: '28cba784-c049-11ed-8535-ac1f6b4782be',
+            appKey: '674bacf20ee8960c86c55795bb76690d',
+            pageSize: 500 // лидов за запрос к API
+        };
+
+        // ═══════════════════════════════════════════════
+        // СОСТОЯНИЕ
+        // ═══════════════════════════════════════════════
+        let allLeads = [];       // все уникальные лиды
+        let filteredLeads = [];  // после поиска
+        let removedDups = 0;
+        let sortField = 'date';
+        let sortDir = -1;
+        let currentPage = 1;
+
+        // ═══════════════════════════════════════════════
+        // FETCH LEADS
+        // ═══════════════════════════════════════════════
+        async function startFetch() {
+            const btn = document.getElementById('fetchBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loader"></span> Загрузка...';
+
+            showStatus('Подключаемся к s20.online...', 'info');
+            showProgress(5);
+
+            try {
+                const raw = await fetchAllLeads();
+                showProgress(80);
+                showStatus(`Получено ${raw.length} лидов. Очищаем дубли...`, 'info');
+
+                const cleaned = deduplicate(raw);
+                allLeads = cleaned.leads;
+                removedDups = cleaned.removed;
+
+                showProgress(100);
+                setTimeout(() => hideProgress(), 600);
+
+                updateStats(raw.length, allLeads.length, removedDups);
+                filterLeads();
+                document.getElementById('tableWrap').classList.add('visible');
+                document.getElementById('controlsRow').style.display = 'flex';
+                document.getElementById('exportBtn').disabled = false;
+
+                const msg = removedDups > 0
+                    ? `✅ Готово! ${allLeads.length} уникальных лидов (удалено ${removedDups} дублей)`
+                    : `✅ Готово! ${allLeads.length} лидов — дублей не найдено`;
+                showStatus(msg, 'success');
+
+                if (removedDups > 0) {
+                    document.getElementById('dupLegend').style.display = 'flex';
+                    document.getElementById('dupInfo').textContent = `Удалено дублей: ${removedDups}`;
+                }
+
+            } catch (e) {
+                console.error(e);
+                showStatus('❌ Ошибка: ' + e.message + (e.hint ? ' · ' + e.hint : ''), 'error');
+                hideProgress();
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Обновить';
+        }
+
+        async function fetchAllLeads() {
+            let page = 0;
+            let leads = [];
+            let hasMore = true;
+            let pagesLoaded = 0;
+
+            while (hasMore) {
+                const url = `${CONFIG.baseUrl}/v2api/${CONFIG.companyId}/lead/index`;
+                const body = {
+                    auth: { id: CONFIG.companyId, apiKey: CONFIG.apiKey },
+                    model: {
+                        page: page,
+                        count: CONFIG.pageSize
+                    }
+                };
+
+                let resp;
+                try {
+                    resp = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Api-Key': CONFIG.apiKey,
+                            'X-APP-KEY': CONFIG.appKey,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    });
+                } catch (e) {
+                    if (e.name === 'TypeError') {
+                        throw Object.assign(new Error('CORS-блокировка браузером.'), {
+                            hint: 'Попробуйте открыть файл в Chrome с флагом --disable-web-security, или используйте Firefox.'
+                        });
+                    }
+                    throw e;
+                }
+
+                if (!resp.ok) {
+                    const txt = await resp.text().catch(() => '');
+                    throw new Error(`API вернул ${resp.status}: ${txt.slice(0, 200)}`);
+                }
+
+                const json = await resp.json();
+
+                // Разные форматы ответа s20
+                let items = [];
+                if (Array.isArray(json)) {
+                    items = json;
+                } else if (json.data && Array.isArray(json.data)) {
+                    items = json.data;
+                } else if (json.items && Array.isArray(json.items)) {
+                    items = json.items;
+                } else if (json.leads && Array.isArray(json.leads)) {
+                    items = json.leads;
+                }
+
+                leads = leads.concat(items);
+                pagesLoaded++;
+
+                document.getElementById('statPages').textContent = pagesLoaded;
+                showProgress(10 + Math.min(65, pagesLoaded * 15));
+                showStatus(`Загружено страниц: ${pagesLoaded}, лидов: ${leads.length}...`, 'info');
+
+                // Продолжать, если получили полную страницу
+                if (items.length < CONFIG.pageSize) {
+                    hasMore = false;
+                } else {
+                    page++;
+                }
+            }
+
+            return leads;
+        }
+
+        // ═══════════════════════════════════════════════
+        // ДЕДУПЛИКАЦИЯ
+        // ═══════════════════════════════════════════════
+        function normalizePhone(p) {
+            if (!p) return null;
+            const d = p.replace(/\D/g, '');
+            if (d.length < 7) return null;
+            return d.slice(-10); // последние 10 цифр
+        }
+
+        function normalizeEmail(e) {
+            if (!e) return null;
+            return e.trim().toLowerCase();
+        }
+
+        function getLeadPhone(lead) {
+            // s20 хранит телефон по-разному
+            if (lead.phone) return lead.phone;
+            if (lead.clientPhone) return lead.clientPhone;
+            if (lead.phones && lead.phones[0]) return lead.phones[0].value || lead.phones[0];
+            if (lead.client && lead.client.phone) return lead.client.phone;
+            return null;
+        }
+
+        function getLeadEmail(lead) {
+            if (lead.email) return lead.email;
+            if (lead.clientEmail) return lead.clientEmail;
+            if (lead.emails && lead.emails[0]) return lead.emails[0].value || lead.emails[0];
+            if (lead.client && lead.client.email) return lead.client.email;
+            return null;
+        }
+
+        function getLeadDate(lead) {
+            return lead.createdAt || lead.dateAdd || lead.date || lead.updatedAt || '';
+        }
+
+        function deduplicate(leads) {
+            // Сортируем — новейшие первыми
+            const sorted = [...leads].sort((a, b) => {
+                const da = new Date(getLeadDate(a) || 0);
+                const db = new Date(getLeadDate(b) || 0);
+                return db - da;
+            });
+
+            const seenPhone = new Map();
+            const seenEmail = new Map();
+            const result = [];
+            let removed = 0;
+            const dupIds = new Set();
+
+            for (const lead of sorted) {
+                const phone = normalizePhone(getLeadPhone(lead));
+                const email = normalizeEmail(getLeadEmail(lead));
+                let isDup = false;
+
+                if (phone && seenPhone.has(phone)) { isDup = true; dupIds.add(seenPhone.get(phone)); }
+                if (email && seenEmail.has(email)) { isDup = true; dupIds.add(seenEmail.get(email)); }
+
+                if (!isDup) {
+                    if (phone) seenPhone.set(phone, lead.id);
+                    if (email) seenEmail.set(email, lead.id);
+                    result.push({ ...lead, _isDupOrigin: false });
+                } else {
+                    removed++;
+                }
+            }
+
+            // Пометить оставшиеся лиды, у которых был дубль
+            result.forEach(l => { l._wasDuped = dupIds.has(l.id); });
+
+            return { leads: result, removed };
+        }
+
+        // ═══════════════════════════════════════════════
+        // RENDER
+        // ═══════════════════════════════════════════════
+        function filterLeads() {
+            const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+            currentPage = 1;
+
+            if (!q) {
+                filteredLeads = [...allLeads];
+            } else {
+                filteredLeads = allLeads.filter(l => {
+                    const name = getLeadName(l).toLowerCase();
+                    const email = (getLeadEmail(l) || '').toLowerCase();
+                    const phone = (getLeadPhone(l) || '').toLowerCase();
+                    return name.includes(q) || email.includes(q) || phone.includes(q);
+                });
+            }
+
+            sortLeads();
+            renderTable();
+        }
+
+        function getLeadName(l) {
+            if (l.name) return l.name;
+            if (l.clientName) return l.clientName;
+            if (l.firstName || l.lastName) return `${l.firstName || ''} ${l.lastName || ''}`.trim();
+            if (l.client) return `${l.client.name || ''} ${l.client.surname || ''}`.trim() || `ID ${l.id}`;
+            return `Лид #${l.id}`;
+        }
+
+        function getLeadStatus(l) {
+            return l.statusName || l.status || l.leadStatus || '—';
+        }
+
+        function getLeadSource(l) {
+            return l.sourceName || l.source || l.referrer || '—';
+        }
+
+        function statusClass(s) {
+            const v = (s || '').toLowerCase();
+            if (v.includes('нов') || v.includes('new')) return 'pill-new';
+            if (v.includes('акт') || v.includes('active') || v.includes('обраб')) return 'pill-active';
+            if (v.includes('закр') || v.includes('close') || v.includes('отказ')) return 'pill-closed';
+            return 'pill-default';
+        }
+
+        function formatDate(d) {
+            if (!d) return '—';
+            const dt = new Date(d);
+            if (isNaN(dt)) return d;
+            return dt.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function sortBy(field) {
+            if (sortField === field) { sortDir *= -1; } else { sortField = field; sortDir = 1; }
+            document.querySelectorAll('.sort-icon').forEach(el => el.textContent = '↕');
+            document.getElementById(`sort_${field}`).textContent = sortDir > 0 ? '↑' : '↓';
+            document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
+            event.currentTarget.classList.add('sorted');
+            currentPage = 1;
+            sortLeads();
+            renderTable();
+        }
+
+        function sortLeads() {
+            filteredLeads.sort((a, b) => {
+                let va, vb;
+                switch (sortField) {
+                    case 'id': va = +(a.id || 0); vb = +(b.id || 0); break;
+                    case 'name': va = getLeadName(a); vb = getLeadName(b); break;
+                    case 'email': va = getLeadEmail(a) || ''; vb = getLeadEmail(b) || ''; break;
+                    case 'phone': va = getLeadPhone(a) || ''; vb = getLeadPhone(b) || ''; break;
+                    case 'status': va = getLeadStatus(a); vb = getLeadStatus(b); break;
+                    case 'source': va = getLeadSource(a); vb = getLeadSource(b); break;
+                    case 'date': va = getLeadDate(a) || ''; vb = getLeadDate(b) || ''; break;
+                    default: return 0;
+                }
+                if (va < vb) return -1 * sortDir;
+                if (va > vb) return 1 * sortDir;
+                return 0;
+            });
+        }
+
+        function renderTable() {
+            const perPage = parseInt(document.getElementById('perPage').value);
+            const start = (currentPage - 1) * perPage;
+            const page = filteredLeads.slice(start, start + perPage);
+
+            document.getElementById('countBadge').textContent = filteredLeads.length;
+
+            const tbody = document.getElementById('tableBody');
+            if (filteredLeads.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted)">Ничего не найдено</td></tr>`;
+                renderPagination(0, perPage);
+                return;
+            }
+
+            tbody.innerHTML = page.map(l => {
+                const dupDot = l._wasDuped ? '<span class="dup-icon" title="Был дублирующий лид"></span>' : '';
+                const email = getLeadEmail(l);
+                const phone = getLeadPhone(l);
+                const status = getLeadStatus(l);
+                return `<tr>
+      <td class="id-cell">${l.id || '—'}</td>
+      <td class="name-cell">${dupDot}${escHtml(getLeadName(l))}</td>
+      <td class="email-cell">${email ? `<a href="mailto:${escHtml(email)}" style="color:inherit;text-decoration:none">${escHtml(email)}</a>` : '<span style="color:var(--muted)">—</span>'}</td>
+      <td class="phone-cell">${phone ? escHtml(phone) : '<span style="color:var(--muted)">—</span>'}</td>
+      <td><span class="status-pill ${statusClass(status)}">${escHtml(status)}</span></td>
+      <td style="color:var(--muted);font-size:12px">${escHtml(getLeadSource(l))}</td>
+      <td class="date-cell">${formatDate(getLeadDate(l))}</td>
+    </tr>`;
+            }).join('');
+
+            renderPagination(filteredLeads.length, perPage);
+        }
+
+        function renderPagination(total, perPage) {
+            const totalPages = Math.ceil(total / perPage);
+            const el = document.getElementById('pagination');
+            if (totalPages <= 1) { el.innerHTML = `<span>${total} записей</span>`; return; }
+
+            const start = (currentPage - 1) * perPage + 1;
+            const end = Math.min(currentPage * perPage, total);
+
+            let pages = '';
+            const range = 2;
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - range && i <= currentPage + range)) {
+                    pages += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
+                } else if (i === currentPage - range - 1 || i === currentPage + range + 1) {
+                    pages += `<span style="color:var(--muted);padding:0 4px">…</span>`;
+                }
+            }
+
+            el.innerHTML = `
+    <span>${start}–${end} из ${total}</span>
+    <div class="page-btns">
+      <button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹</button>
+      ${pages}
+      <button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>›</button>
+    </div>`;
+        }
+
+        function goPage(p) {
+            const perPage = parseInt(document.getElementById('perPage').value);
+            const totalPages = Math.ceil(filteredLeads.length / perPage);
+            if (p < 1 || p > totalPages) return;
+            currentPage = p;
+            renderTable();
+            document.querySelector('.table-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ═══════════════════════════════════════════════
+        // EXPORT CSV
+        // ═══════════════════════════════════════════════
+        function exportCSV() {
+            const rows = [['ID', 'Имя', 'Email', 'Телефон', 'Статус', 'Источник', 'Дата']];
+            for (const l of filteredLeads) {
+                rows.push([
+                    l.id || '',
+                    getLeadName(l),
+                    getLeadEmail(l) || '',
+                    getLeadPhone(l) || '',
+                    getLeadStatus(l),
+                    getLeadSource(l),
+                    getLeadDate(l) ? new Date(getLeadDate(l)).toLocaleDateString('ru-RU') : ''
+                ]);
+            }
+            const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `crm_leads_${new Date().toLocaleDateString('ru-RU').replace(/\./g, '-')}.csv`;
+            a.click();
+        }
+
+        // ═══════════════════════════════════════════════
+        // HELPERS
+        // ═══════════════════════════════════════════════
+        function showStatus(msg, type) {
+            const el = document.getElementById('statusMsg');
+            el.className = 'status ' + type;
+            el.textContent = msg;
+        }
+
+        function showProgress(pct) {
+            document.getElementById('progressBar').classList.add('active');
+            document.getElementById('progressFill').style.width = pct + '%';
+        }
+
+        function hideProgress() {
+            document.getElementById('progressBar').classList.remove('active');
+            document.getElementById('progressFill').style.width = '0%';
+        }
+
+        function updateStats(total, uniq, dups) {
+            document.getElementById('statTotal').textContent = total.toLocaleString('ru');
+            document.getElementById('statUniq').textContent = uniq.toLocaleString('ru');
+            document.getElementById('statDups').textContent = dups.toLocaleString('ru');
+        }
+
+        function escHtml(s) {
+            return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+
+</html>
