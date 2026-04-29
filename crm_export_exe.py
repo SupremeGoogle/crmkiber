@@ -91,6 +91,69 @@ def extract_phone(row_html, joined_text):
     return ""
 
 
+def fetch_phone_from_lead_card(lead_id, session):
+    if not lead_id:
+        return ""
+    url = f"{CONFIG['base_url']}/company/{CONFIG['company_id']}/lead/view/{lead_id}"
+    req = urllib.request.Request(url, method="GET")
+    req.add_header("Accept", "text/html,application/xhtml+xml")
+    req.add_header("Referer", f"{CONFIG['base_url']}/company/{CONFIG['company_id']}/lead/index?LeadSearch%5Bf_removed%5D=2")
+    req.add_header("Cookie", session["cookie"])
+    req.add_header("User-Agent", "Mozilla/5.0")
+
+    try:
+        with urllib.request.urlopen(req, context=SSL_CTX, timeout=45) as resp:
+            html_body = resp.read().decode("utf-8", errors="ignore")
+    except Exception:
+        return ""
+
+    patterns = [
+        r"Мобильный\s*</[^>]*>\s*<[^>]*>\s*([^<]+)",
+        r"Мобильный\s*[:\-]?\s*([^<\n\r]+)",
+        r"phone\"\s*:\s*\"([^\"]+)\"",
+    ]
+    for p in patterns:
+        m = re.search(p, html_body, flags=re.IGNORECASE)
+        if not m:
+            continue
+        normalized = normalize_phone_text(m.group(1))
+        if normalized:
+            return normalized
+
+    around_mobile = re.search(r"Мобильный[\s\S]{0,200}", html_body, flags=re.IGNORECASE)
+    if around_mobile:
+        m2 = re.search(r"\+?\d[\d\s()\-]{8,}\d", around_mobile.group(0))
+        if m2:
+            normalized = normalize_phone_text(m2.group(0))
+            if normalized:
+                return normalized
+
+    return ""
+
+
+def enrich_missing_phones(leads, session):
+    missing = [lead for lead in leads if not (lead.get("phone") or "").strip() and lead.get("id")]
+    if not missing:
+        return 0
+
+    print(f"\nДогружаем телефоны из карточек лидов: {len(missing)} шт.")
+    filled = 0
+    total = len(missing)
+    for idx, lead in enumerate(missing, start=1):
+        lead_id = lead.get("id")
+        print(f"[{idx}/{total}] Проверяю ID={lead_id}...", flush=True)
+        phone = fetch_phone_from_lead_card(lead_id, session)
+        if phone:
+            lead["phone"] = phone
+            filled += 1
+            print(f"  -> найден телефон: {phone}", flush=True)
+        else:
+            print("  -> телефон не найден", flush=True)
+
+    print(f"Дозаполнено телефонов: {filled}\n")
+    return filled
+
+
 def parse_leads_from_report_html(content_html):
     rows = re.findall(r"<tr[^>]*>([\s\S]*?)</tr>", content_html or "", flags=re.IGNORECASE)
     leads = []
@@ -297,6 +360,8 @@ def main():
     if not leads:
         print("Лидов 0. Скорее всего, токены устарели. Вставь свежие значения из Network.")
         sys.exit(1)
+
+    enrich_missing_phones(leads, session)
 
     unique_leads, removed = dedup(leads)
 
