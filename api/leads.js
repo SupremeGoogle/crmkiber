@@ -106,6 +106,30 @@ function parseLeadRowsFromHtml(html) {
   return items;
 }
 
+function parseJsonBlobsFromHtml(html) {
+  const items = [];
+  const scripts = html.match(/<script[\s\S]*?<\/script>/gi) || [];
+  const jsonCandidates = [];
+
+  for (const script of scripts) {
+    const text = script.replace(/<script[^>]*>/i, "").replace(/<\/script>/i, "");
+    const matches = text.match(/\{[\s\S]{40,}\}|\[[\s\S]{40,}\]/g) || [];
+    for (const m of matches) jsonCandidates.push(m);
+  }
+
+  for (const raw of jsonCandidates) {
+    try {
+      const obj = JSON.parse(raw);
+      const arr = pickItemsFromAnyJson(obj);
+      if (arr.length) items.push(...arr);
+    } catch (_e) {
+      // ignore malformed snippets
+    }
+  }
+
+  return items;
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -146,7 +170,17 @@ module.exports = async (req, res) => {
     } else {
       const html = await upstream.text();
       items = parseLeadRowsFromHtml(html);
-      debug = { mode: "html", htmlSize: html.length, chosenItems: items.length };
+      if (!items.length) {
+        items = parseJsonBlobsFromHtml(html);
+      }
+      const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+      debug = {
+        mode: "html",
+        htmlSize: html.length,
+        chosenItems: items.length,
+        title: titleMatch ? stripTags(titleMatch[1]) : "",
+        sample: stripTags(html).slice(0, 240),
+      };
     }
 
     return res.status(200).json({
