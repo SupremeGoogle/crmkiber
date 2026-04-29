@@ -1,0 +1,44 @@
+name: Build crmkiber for Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - "crm_export_exe.py"
+      - "build_windows_exe.bat"
+      - ".github/workflows/build-crmkiber-windows.yml"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller openpyxl
+
+      - name: Build exe
+        run: pyinstaller --onefile --name crmkiber crm_export_exe.py
+
+      - name: Create archive
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path release | Out-Null
+          Copy-Item "dist\crmkiber.exe" "release\crmkiber.exe"
+          Compress-Archive -Path "release\*" -DestinationPath "crmkiber_windows.zip" -Force
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: crmkiber-windows
+          path: crmkiber_windows.zip
