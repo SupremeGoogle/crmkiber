@@ -10,10 +10,10 @@ echo ""
 # Проверяем Python
 if command -v python3 &>/dev/null; then
     echo "  ✅  Python найден: $(python3 --version)"
-    python3 index.html
+    python3 crm_desktop.py
 elif command -v python &>/dev/null; then
     echo "  ✅  Python найден: $(python --version)"
-    python index.html
+    python crm_desktop.py
 else
     echo "  ❌  Python не найден."
     echo ""
