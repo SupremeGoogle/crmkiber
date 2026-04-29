@@ -1,9 +1,9 @@
 const CONFIG = {
   baseUrl: process.env.BASE_URL || "https://kiberonekaliningrad.s20.online",
-  boardId: Number(process.env.BOARD_ID || "34"),
-  resourceId: Number(process.env.RESOURCE_ID || "261"),
-  branchId: String(process.env.BRANCH_ID || "1"),
-  boardColor: process.env.BOARD_COLOR || "#006600",
+  companyId: Number(process.env.COMPANY_ID || "1"),
+  csrfToken:
+    process.env.CSRF_TOKEN ||
+    "5ibEEXvW_ceU1LaisICZDZtC7_7jWbyFqR--jbLrm6LUcYlFD5-ehqaahPTh7dNeqRSczJo-z8HdVPLS9If-zQ==",
   pageSize: Number(process.env.PAGE_SIZE || "500"),
   cookie:
     process.env.CRM_COOKIE ||
@@ -57,30 +57,75 @@ function pickItemsFromAnyJson(data) {
   return Array.isArray(best) ? best : [];
 }
 
+function decodeHtmlEntities(text) {
+  if (!text) return "";
+  return text
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+}
+
+function stripTags(text) {
+  return decodeHtmlEntities(String(text || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim());
+}
+
+function parseLeadRowsFromHtml(html) {
+  const rows = html.match(/<tr[\s\S]*?<\/tr>/gi) || [];
+  const items = [];
+
+  for (const row of rows) {
+    const cells = row.match(/<td[\s\S]*?<\/td>/gi) || [];
+    if (cells.length < 3) continue;
+
+    const cellText = cells.map(stripTags).filter(Boolean);
+    const idMatch = row.match(/\/lead\/view\/(\d+)/i) || row.match(/\bID\D{0,3}(\d{2,})/i);
+    const emailMatch = row.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi);
+    const phoneMatch = row.match(/\+?\d[\d\s()\-]{7,}/g);
+
+    const id = idMatch ? Number(idMatch[1]) : undefined;
+    if (!id && !emailMatch && !phoneMatch) continue;
+
+    const nameCandidate = cellText.find((t) => /[A-Za-zА-Яа-я]/.test(t) && !/@/.test(t) && !/^\+?\d[\d\s()\-]+$/.test(t));
+    const statusCandidate = cellText.find((t) => /нов|акт|обраб|закр|отказ|new|active|close/i.test(t));
+
+    items.push({
+      id,
+      name: nameCandidate || `Лид #${id || items.length + 1}`,
+      email: emailMatch ? emailMatch[0] : null,
+      phone: phoneMatch ? phoneMatch[0].trim() : null,
+      status: statusCandidate || "—",
+      source: "CRM report",
+      date: null,
+      _raw: cellText,
+    });
+  }
+
+  return items;
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   if (req.method === "OPTIONS") return res.status(200).end();
 
   try {
-    const query = encodeURIComponent(
-      JSON.stringify({
-        branch: CONFIG.branchId,
-        LeadSearch: { f_removed: "2" },
-      })
+    const backUrl = encodeURIComponent(
+      `${CONFIG.baseUrl}/company/${CONFIG.companyId}/lead/index?LeadSearch%5Bf_removed%5D=2`
     );
-
-    const url = `${CONFIG.baseUrl}/company/1/lead/board?id=${CONFIG.boardId}&color=${encodeURIComponent(
-      CONFIG.boardColor
-    )}&query=${query}&resource_id=${CONFIG.resourceId}`;
+    const url = `${CONFIG.baseUrl}/company/${CONFIG.companyId}/report/lead-created?backUrl=${backUrl}`;
 
     const upstream = await fetch(url, {
-      method: "GET",
+      method: "POST",
       headers: {
-        Accept: "application/json",
-        Referer: `${CONFIG.baseUrl}/company/1/lead/index?LeadSearch%5Bf_removed%5D=2`,
+        Accept: "*/*",
+        Origin: CONFIG.baseUrl,
+        Referer: `${CONFIG.baseUrl}/company/${CONFIG.companyId}/lead/index?LeadSearch%5Bf_removed%5D=2`,
         Cookie: CONFIG.cookie,
         "X-Requested-With": "XMLHttpRequest",
+        "X-CSRF-Token": CONFIG.csrfToken,
       },
     });
 
@@ -89,19 +134,26 @@ module.exports = async (req, res) => {
       return res.status(502).json({ error: `API ${upstream.status}: ${text.slice(0, 300)}` });
     }
 
-    const data = await upstream.json();
-    const items = pickItemsFromAnyJson(data);
-    const topLevelKeys = data && typeof data === "object" ? Object.keys(data).slice(0, 20) : [];
+    const contentType = upstream.headers.get("content-type") || "";
+
+    let items = [];
+    let debug = {};
+    if (contentType.includes("application/json")) {
+      const data = await upstream.json();
+      items = pickItemsFromAnyJson(data);
+      const topLevelKeys = data && typeof data === "object" ? Object.keys(data).slice(0, 20) : [];
+      debug = { mode: "json", totalKeys: topLevelKeys.length, keys: topLevelKeys, chosenItems: items.length };
+    } else {
+      const html = await upstream.text();
+      items = parseLeadRowsFromHtml(html);
+      debug = { mode: "html", htmlSize: html.length, chosenItems: items.length };
+    }
 
     return res.status(200).json({
       items,
       hasMore: false,
       sourceUrl: url,
-      debug: {
-        totalKeys: topLevelKeys.length,
-        keys: topLevelKeys,
-        chosenItems: items.length,
-      },
+      debug,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message || "Unexpected server error" });
