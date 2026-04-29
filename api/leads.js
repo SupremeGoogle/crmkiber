@@ -1,9 +1,13 @@
 const CONFIG = {
   baseUrl: process.env.BASE_URL || "https://kiberonekaliningrad.s20.online",
-  companyId: Number(process.env.COMPANY_ID || "18"),
-  apiKey: process.env.API_KEY || "28cba784-c049-11ed-8535-ac1f6b4782be",
-  appKey: process.env.APP_KEY || "674bacf20ee8960c86c55795bb76690d",
+  boardId: Number(process.env.BOARD_ID || "34"),
+  resourceId: Number(process.env.RESOURCE_ID || "261"),
+  branchId: String(process.env.BRANCH_ID || "1"),
+  boardColor: process.env.BOARD_COLOR || "#006600",
   pageSize: Number(process.env.PAGE_SIZE || "500"),
+  cookie:
+    process.env.CRM_COOKIE ||
+    "PHPSESSID=g5rl7p448vaputca6delp27h65; _csrf=93ef67846c9a5a5d282c7fa9a323ff0572e8add11c9e45313acad20df9788f7aa%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%222WMTtIcA2N2VQmJS2Vs2ygsDtKL_Fleo%22%3B%7D; supportOnlineTalkID=08798423424f5bd02976401edc252a2c",
 };
 
 module.exports = async (req, res) => {
@@ -11,53 +15,55 @@ module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   if (req.method === "OPTIONS") return res.status(200).end();
 
-  const page = Number.parseInt(req.query.page || "0", 10);
-
   try {
-    const candidates = [
-      `${CONFIG.baseUrl}/v2api/${CONFIG.companyId}/lead/index`,
-      `${CONFIG.baseUrl}/v2api/lead/index`,
-      `${CONFIG.baseUrl}/api/v2/lead/index`,
-    ];
+    const query = encodeURIComponent(
+      JSON.stringify({
+        branch: CONFIG.branchId,
+        LeadSearch: { f_removed: "2" },
+      })
+    );
 
-    const payload = JSON.stringify({
-      auth: { id: CONFIG.companyId, apiKey: CONFIG.apiKey },
-      model: { page: Number.isFinite(page) ? page : 0, count: CONFIG.pageSize },
+    const url = `${CONFIG.baseUrl}/company/1/lead/board?id=${CONFIG.boardId}&color=${encodeURIComponent(
+      CONFIG.boardColor
+    )}&query=${query}&resource_id=${CONFIG.resourceId}`;
+
+    const upstream = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Referer: `${CONFIG.baseUrl}/company/1/lead/index?LeadSearch%5Bf_removed%5D=2`,
+        Cookie: CONFIG.cookie,
+        "X-Requested-With": "XMLHttpRequest",
+      },
     });
 
-    const headers = {
-      "Content-Type": "application/json",
-      "X-Api-Key": CONFIG.apiKey,
-      "X-APP-KEY": CONFIG.appKey,
-      Accept: "application/json",
-    };
-
-    let upstream = null;
-    let lastError = "";
-    let usedUrl = "";
-
-    for (const url of candidates) {
-      usedUrl = url;
-      upstream = await fetch(url, { method: "POST", headers, body: payload });
-      if (upstream.ok) break;
+    if (!upstream.ok) {
       const text = await upstream.text();
-      lastError = `API ${upstream.status} at ${url}: ${text.slice(0, 200)}`;
-      upstream = null;
-    }
-
-    if (!upstream) {
-      return res.status(502).json({ error: lastError || "CRM API request failed" });
+      return res.status(502).json({ error: `API ${upstream.status}: ${text.slice(0, 300)}` });
     }
 
     const data = await upstream.json();
-    const items = Array.isArray(data)
-      ? data
-      : data?.data || data?.items || data?.leads || [];
+    let items = [];
+
+    if (Array.isArray(data)) {
+      items = data;
+    } else if (Array.isArray(data?.items)) {
+      items = data.items;
+    } else if (Array.isArray(data?.data)) {
+      items = data.data;
+    } else if (Array.isArray(data?.leads)) {
+      items = data.leads;
+    } else if (Array.isArray(data?.result)) {
+      items = data.result;
+    } else if (data && typeof data === "object") {
+      const arrays = Object.values(data).filter((v) => Array.isArray(v));
+      if (arrays.length) items = arrays.sort((a, b) => b.length - a.length)[0];
+    }
 
     return res.status(200).json({
       items,
-      hasMore: items.length >= CONFIG.pageSize,
-      sourceUrl: usedUrl,
+      hasMore: false,
+      sourceUrl: url,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message || "Unexpected server error" });
