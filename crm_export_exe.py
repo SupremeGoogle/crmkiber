@@ -127,9 +127,11 @@ def fetch_phone_from_lead_card(lead_id, session):
     patterns = [
         r"Мобильный\s*</[^>]*>\s*<[^>]*>\s*([^<]+)",
         r"Мобильный\s*[:\-]?\s*([^<\n\r]+)",
+        r"Моб\.?(?:ильный)?\s*[:\-]?\s*([^<\n\r]+)",
         r"Телефон\s*</[^>]*>\s*<[^>]*>\s*([^<]+)",
         r"Телефон\s*[:\-]?\s*([^<\n\r]+)",
         r"phone\"\s*:\s*\"([^\"]+)\"",
+        r"mobile\"\s*:\s*\"([^\"]+)\"",
     ]
     for p in patterns:
         m = re.search(p, html_body, flags=re.IGNORECASE)
