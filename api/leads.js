@@ -3,7 +3,10 @@ const CONFIG = {
   companyId: Number(process.env.COMPANY_ID || "1"),
   csrfToken:
     process.env.CSRF_TOKEN ||
-    "5ibEEXvW_ceU1LaisICZDZtC7_7jWbyFqR--jbLrm6LUcYlFD5-ehqaahPTh7dNeqRSczJo-z8HdVPLS9If-zQ==",
+    "v8Nn4DTx25F8e6gwmWwnhNEnWc22ZzUgLHOZbymq4_-NlCq0QLi40E41mmbIAW3X43Eq_88ARmRYONUwb8aGkA==",
+  csrfForm:
+    process.env.CSRF_FORM ||
+    "Cgs0Gx1PpbcUKg2c5hrnJgysGIMp-Hs2fqQWMk3CBIE4XHlPaQbG9iZkP8q3d611PvprsVCfCHIK71ptC65h7g==",
   pageSize: Number(process.env.PAGE_SIZE || "500"),
   cookie:
     process.env.CRM_COOKIE ||
@@ -141,6 +144,15 @@ module.exports = async (req, res) => {
     );
     const url = `${CONFIG.baseUrl}/company/${CONFIG.companyId}/report/lead-created?backUrl=${backUrl}`;
 
+    const form = new URLSearchParams();
+    form.set("_csrf", CONFIG.csrfForm);
+    form.set("ReportForm[d1]", "01.12.2022");
+    form.set("ReportForm[d2]", "30.04.2026");
+    form.set("ReportForm[pipelines]", "");
+    form.set("ReportForm[sort]", "1");
+    form.set("ReportForm[is_skip_archive]", "0");
+    form.set("export", "");
+
     const upstream = await fetch(url, {
       method: "POST",
       headers: {
@@ -150,7 +162,9 @@ module.exports = async (req, res) => {
         Cookie: CONFIG.cookie,
         "X-Requested-With": "XMLHttpRequest",
         "X-CSRF-Token": CONFIG.csrfToken,
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
       },
+      body: form.toString(),
     });
 
     if (!upstream.ok) {
@@ -166,6 +180,14 @@ module.exports = async (req, res) => {
       const data = await upstream.json();
       items = pickItemsFromAnyJson(data);
       const topLevelKeys = data && typeof data === "object" ? Object.keys(data).slice(0, 20) : [];
+      if (!items.length && typeof data === "string") {
+        try {
+          const parsed = JSON.parse(data);
+          items = pickItemsFromAnyJson(parsed);
+        } catch (_e) {
+          // ignore
+        }
+      }
       debug = { mode: "json", totalKeys: topLevelKeys.length, keys: topLevelKeys, chosenItems: items.length };
     } else {
       const html = await upstream.text();
